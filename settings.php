@@ -7,7 +7,7 @@ defined('MOODLE_INTERNAL') || die;
 global $PAGE,$CFG;
 
 if ($hassiteconfig) {
-    $ADMIN->add('courses', new admin_externalpage('local_course_template',
-           		get_string('addcourse', 'local_course_template'),
-            	new moodle_url('/local/course_template/index.php')));
+    $ADMIN->add('courses', new admin_externalpage('local_course_templates',
+           		get_string('addcourse', 'local_course_templates'),
+            	new moodle_url('/local/course_templates/index.php')));
 }

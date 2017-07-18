@@ -10,9 +10,9 @@
  * ************************************************************************
 */
 defined('MOODLE_INTERNAL') || die();
-$plugin->component = 'local_course_template';
+$plugin->component = 'local_course_templates';
 $plugin->version  = 2016033002; //with course long name
 $plugin->requires = 2015041700;
 $plugin->maturity = MATURITY_STABLE;
 $plugin->release = 'Course Template Plugin Version 2016033001';
-$plugin->component = 'local_course_template';
+$plugin->component = 'local_course_templates';

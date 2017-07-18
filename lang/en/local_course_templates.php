@@ -12,5 +12,5 @@ $string['choosetemplate'] = 'Please choose your template';
 $string['choosecategory'] = 'Please select your course category';
 $string['inputinfo'] = 'Please enter below infomation';
 $string['inputinfotip'] = 'Please enter new course infomation';
-$string['course_template:edit'] = 'Edit Course Template';
+$string['course_templates:edit'] = 'Edit Course Template';
 $string['hiddencategories'] = 'Hidden Categries';

@@ -1,6 +1,6 @@
 <?php
 $capabilities = array(
-	'local/course_template:edit' => array(
+	'local/course_templates:edit' => array(
 
         'captype' => 'read',
         'contextlevel' => CONTEXT_BLOCK,
