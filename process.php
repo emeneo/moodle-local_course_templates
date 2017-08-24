@@ -14,8 +14,17 @@
 // You should have received a copy of the GNU General Public License
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
+if (!defined('AJAX_SCRIPT')) {
+    define('AJAX_SCRIPT', true);
+}
+
 require_once(dirname(__FILE__) . '/../../config.php');
 require_once('../../course/externallib.php');
+require_login();
+require_sesskey();
+
+$context = context_user::instance($USER->id);
+require_capability('local/course_templates:edit', $context);
 
 $fullname = $_REQUEST['course_short_name'];
 $shortname = $_REQUEST['course_short_name'];
