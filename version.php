@@ -29,4 +29,4 @@ $plugin->component = 'local_course_templates';
 $plugin->version  = 2017082102;
 $plugin->requires = 2015041700;
 $plugin->maturity = MATURITY_STABLE;
-$plugin->release = 'Course templates plugin Version 3.1-a';
+$plugin->release = 'Course templates plugin Version 3.1-b';
