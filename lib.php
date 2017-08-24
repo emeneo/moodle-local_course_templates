@@ -99,7 +99,7 @@ function get_template_categories_form($cid) {
 function get_template_setting_form($cid, $categoryid) {
     global $CFG, $USER, $DB;
 
-    $redirecturl = $CFG->wwwroot.'/local/course_templates/process.php?cid='.$cid.'&cateid='.$categoryid;
+    $redirecturl = $CFG->wwwroot.'/local/course_templates/process.php?cid='.$cid.'&cateid='.$categoryid.'&sesskey='.sesskey();
     $returnurl   = $CFG->wwwroot.'/local/course_templates/index.php?step=4';
     $output = '';
     // ... $output.= '<script src="'.$CFG->wwwroot.'/local/course_templates/js/jquery.js"></script>';
