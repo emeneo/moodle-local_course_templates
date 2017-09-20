@@ -14,13 +14,22 @@
 // You should have received a copy of the GNU General Public License
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
+if (!defined('AJAX_SCRIPT')) {
+    define('AJAX_SCRIPT', true);
+}
+
 require_once(dirname(__FILE__) . '/../../config.php');
 require_once('../../course/externallib.php');
+require_login();
+require_sesskey();
 
-$fullname = $_REQUEST['course_short_name'];
-$shortname = $_REQUEST['course_short_name'];
-$categoryid = $_REQUEST['cateid'];
-$courseid = $_REQUEST['cid'];
+$context = context_user::instance($USER->id);
+require_capability('local/course_templates:edit', $context);
+
+$fullname = optional_param('course_short_name', '', PARAM_RAW);
+$shortname = optional_param('course_short_name', '', PARAM_RAW);
+$categoryid = optional_param('cateid', 0, PARAM_INT);
+$courseid = optional_param('cid', 0, PARAM_INT);
 $options = array(array('name' => 'blocks', 'value' => 1),
                  array('name' => 'activities', 'value' => 1),
                  array('name' => 'filters', 'value' => 1),

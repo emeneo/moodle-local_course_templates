@@ -35,6 +35,11 @@ $PAGE->set_pagelayout('standard');
 $PAGE->set_title($pagetitle);
 $PAGE->set_heading($header);
 
+$sel_cate = optional_param('sel_cate', 0, PARAM_INT); 
+$course_status = optional_param('status', 0, PARAM_INT);
+$course_id = optional_param('courseid', 0, PARAM_INT);
+$cate_id = optional_param('cateid', 0, PARAM_INT); 
+
 require_capability('local/course_templates:edit', $context);
 
 $redirecturl = $CFG->wwwroot.'/local/course_templates/index.php';
@@ -53,23 +58,23 @@ if (!$step) {
         echo get_template_categories_form($cid);
     }
 } else if ($step == 3) {
-    if (!$_REQUEST['sel_cate']) {
+    if (!$sel_cate) {
         echo $OUTPUT->notification(get_string('choosecategory', 'local_course_templates'));
         echo html_writer::tag('p', html_writer::empty_tag('input', array('type' => 'button', 'value' => get_string('continue', 'local_course_templates'), 'onclick' => 'window.location.href="'.$redirecturl.'?step=2&cid='.$cid.'"')));
     } else {
-        $categoryid = $_REQUEST['sel_cate'];
+        $categoryid = $sel_cate;
         echo html_writer::tag('p', html_writer::tag('strong', get_string('inputinfo', 'local_course_templates')));
         echo get_template_setting_form($cid, $categoryid);
     }
 } else if ($step == 4) {
-    $status = $_REQUEST['status'];
-    $courseid = $_REQUEST['courseid'];
+    $status = $course_status;
+    $courseid = $course_id;
     if ($status == 1) {
         $redirecturl = $CFG->wwwroot.'/course/view.php?id='.$courseid;
         echo html_writer::tag('p', get_string('createsuccess', 'local_course_templates'));
         echo html_writer::tag('p', html_writer::empty_tag('input', array('type' => 'button', 'value' => get_string('continue', 'local_course_templates'), 'onclick' => 'window.location.href="'.$redirecturl.'"')));
     } else if ($status == 2) {
-        $cateid = $_REQUEST['cateid'];
+        $cateid = $cate_id;
         echo $OUTPUT->notification(get_string('inputinfotip', 'local_course_templates'));
         echo html_writer::tag('p', html_writer::empty_tag('input', array('type' => 'button', 'value' => get_string('continue', 'local_course_templates'), 'onclick' => 'window.location.href="'.$redirecturl.'?step=3&cid='.$courseid.'&sel_cate='.$cateid.'"')));
     } else {

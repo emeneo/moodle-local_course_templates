@@ -17,9 +17,18 @@
 defined('MOODLE_INTERNAL') || die();
 
 $capabilities = array(
-    'local/course_templates:edit' => array(
-
+    'local/course_templates:view' => array(
         'captype' => 'read',
+        'contextlevel' => CONTEXT_BLOCK,
+        'archetypes' => array(
+            'teacher' => CAP_ALLOW,
+            'editingteacher' => CAP_ALLOW,
+            'manager' => CAP_ALLOW
+        )
+    ),
+
+    'local/course_templates:edit' => array(
+        'captype' => 'write',
         'contextlevel' => CONTEXT_BLOCK,
         'archetypes' => array(
             'teacher' => CAP_ALLOW,
