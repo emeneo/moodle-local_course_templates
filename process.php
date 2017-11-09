@@ -26,7 +26,7 @@ require_sesskey();
 $context = context_user::instance($USER->id);
 require_capability('local/course_templates:edit', $context);
 
-$fullname = optional_param('course_short_name', '', PARAM_RAW);
+$fullname = optional_param('course_name', '', PARAM_RAW);
 $shortname = optional_param('course_short_name', '', PARAM_RAW);
 $categoryid = optional_param('cateid', 0, PARAM_INT);
 $courseid = optional_param('cid', 0, PARAM_INT);

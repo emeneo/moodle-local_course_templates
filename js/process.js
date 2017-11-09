@@ -6,12 +6,11 @@ window.onload = function(){
             if(!can_process) {
                 return false;
             }
-
             can_process = false;
             $.ajax({
                 type: "post",
                 url: $('#process_request_url').val(),
-                data: "course_short_name=" + $('#course_short_name').val(),
+                data: "course_short_name=" + $('#course_short_name').val() + "&course_name=" + $('#course_name').val(),
                 dataType: "json",
                 beforeSend: function(){
                     $('#btnProcess').val('Creating...');
