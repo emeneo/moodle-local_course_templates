@@ -23,8 +23,15 @@
 defined('MOODLE_INTERNAL') || die();
 
 $plugin->component = 'local_course_templates';
+<<<<<<< HEAD
 $plugin->cron = 0; 
 $plugin->version  = 2018052500;
 $plugin->requires = 2015041700;
 $plugin->maturity = MATURITY_STABLE;
 $plugin->release = 'Course templates plugin Version 3.5-a';
+=======
+$plugin->version  = 2017110901;
+$plugin->requires = 2015041700;
+$plugin->maturity = MATURITY_STABLE;
+$plugin->release = 'Course templates plugin Version 3.4-a';
+>>>>>>> origin/master
