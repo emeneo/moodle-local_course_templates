@@ -17,6 +17,12 @@
 // OUTCOMMENTED: error_reporting(E_ALL);// open all error reporting (=打开所有错误报告)
 // OUTCOMMENTED: ini_set('display_errors', 'On');
 
+/**
+ * @package   local_course_templates
+ * @copyright 2017 onwards, emeneo (www.emeneo.com)
+ * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
+ */
+
 defined('MOODLE_INTERNAL') || die;
 
 global $PAGE, $CFG;

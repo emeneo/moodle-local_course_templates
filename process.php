@@ -14,18 +14,25 @@
 // You should have received a copy of the GNU General Public License
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
-if (!defined('AJAX_SCRIPT')) {
-    define('AJAX_SCRIPT', true);
-}
+/**
+ * @package   local_course_templates
+ * @copyright 2017 onwards, emeneo (www.emeneo.com)
+ * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
+ */
 
 require_once(dirname(__FILE__) . '/../../config.php');
 require_once('../../course/externallib.php');
 require_login();
 require_sesskey();
 
+if (!defined('AJAX_SCRIPT')) {
+    define('AJAX_SCRIPT', true);
+}
+
 $context = context_user::instance($USER->id);
 require_capability('local/course_templates:edit', $context);
 
+// TODO: check option users further.
 $fullname = optional_param('course_name', '', PARAM_RAW);
 $shortname = optional_param('course_short_name', '', PARAM_RAW);
 $categoryid = optional_param('cateid', 0, PARAM_INT);
@@ -33,7 +40,8 @@ $courseid = optional_param('cid', 0, PARAM_INT);
 $options = array(array('name' => 'blocks', 'value' => 1),
                  array('name' => 'activities', 'value' => 1),
                  array('name' => 'filters', 'value' => 1),
-                 array('name' => 'users', 'value' => 1));
+                 array('name' => 'users', 'value' => 1)
+                 );
 $visible = 1;
 
 if (!$fullname || !$shortname || !$categoryid || !$courseid) {

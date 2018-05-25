@@ -40,7 +40,7 @@ $course_status = optional_param('status', 0, PARAM_INT);
 $course_id = optional_param('courseid', 0, PARAM_INT);
 $cate_id = optional_param('cateid', 0, PARAM_INT); 
 
-require_capability('local/course_templates:edit', $context);
+require_capability('local/course_templates:view', $context);
 
 $redirecturl = $CFG->wwwroot.'/local/course_templates/index.php';
 
