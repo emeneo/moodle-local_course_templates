@@ -32,6 +32,7 @@ function get_template_list() {
 function get_template_list_form() {
     global $CFG, $USER, $DB;
 
+    $context = context_user::instance($USER->id);
     $redirecturl = $CFG->wwwroot.'/local/course_templates/index.php?step=2';
     $rows = get_template_list();
 
@@ -41,7 +42,7 @@ function get_template_list_form() {
     foreach ($rows as $row) {
         $data = array();
 
-        $data[] = $row->fullname;
+        $data[] = format_string($row->fullname, true, ['context' => $context]);
         $data[] = html_writer::empty_tag('input', array('type' => 'button', 'value' => get_string('useastemplate', 'local_course_templates'), 'onclick' => 'window.location.href="'.$redirecturl.'&cid='.$row->id.'"'));
 
         $table->data[] = $data;
@@ -60,6 +61,7 @@ function get_template_categories($visible=1) {
 function get_template_categories_form($cid) {
     global $CFG, $USER, $DB;
 
+    $context = context_user::instance($USER->id);
     $redirecturl = $CFG->wwwroot.'/local/course_templates/index.php?step=3&cid='.$cid;
     $rows = get_template_categories(1);
 
@@ -73,8 +75,8 @@ function get_template_categories_form($cid) {
         $data = array();
 
         $data[] = html_writer::empty_tag('input', array('type' => 'radio', 'value' => $row->id, 'name' => 'sel_cate'));
-        $data[] = $row->name;
-        $data[] = strip_tags($row->description);
+        $data[] = format_string($row->name, true, ['context' => $context]);
+        $data[] = strip_tags(format_text($row->description, FORMAT_HTML, ['context' => $context]));
 
         $table->data[] = $data;
     }
@@ -88,8 +90,8 @@ function get_template_categories_form($cid) {
         $data = array();
 
         $data[] = html_writer::empty_tag('input', array('type' => 'radio', 'value' => $row->id, 'name' => 'sel_cate'));
-        $data[] = $row->name;
-        $data[] = strip_tags($row->description);
+        $data[] = format_string($row->name, true, ['context' => $context]);
+        $data[] = strip_tags(format_text($row->description, FORMAT_HTML, ['context' => $context]));
 
         $hiddentable->data[] = $data;
     }
