@@ -30,7 +30,7 @@ if (!defined('AJAX_SCRIPT')) {
 }
 
 $context = context_user::instance($USER->id);
-require_capability('local/course_templates:edit', $context);
+require_capability('local/course_templates:view', $context);
 
 // TODO: check option users further.
 $fullname = optional_param('course_name', '', PARAM_RAW);
