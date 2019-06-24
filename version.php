@@ -27,4 +27,4 @@ $plugin->cron = 0;
 $plugin->version  = 2019062000;
 $plugin->requires = 2015041700;
 $plugin->maturity = MATURITY_STABLE;
-$plugin->release = 'Course templates plugin Version 3.5-c';
+$plugin->release = 'Course templates plugin Version 3.6-a';
