@@ -164,7 +164,7 @@ function get_template_setting_form($cid, $categoryid) {
             if(empty($location))continue;
             $options.= "<option value='".$location."'>".$location."</option>";
         }
-        $option.="</select>";
+        $options.="</select>";
         $table->data[] = array(get_string('location', 'local_course_templates'), $options);
     }
 
@@ -175,30 +175,4 @@ function get_template_setting_form($cid, $categoryid) {
 
     $output .= '<script>$("#course_date").datetimepicker({minView: "month",format: "yyyy-mm-dd",autoclose:true});</script>';
     return $output;
-}
-
-function local_course_templates_extend_navigation(global_navigation $navigation) {
-    global $PAGE, $COURSE;
-    $branch = $navigation->find('admin', navigation_node::TYPE_SITE_ADMIN);
-    $node = navigation_node::create(get_string('addcourse', 'local_course_templates'), new moodle_url('/local/course_templates/index.php'));
-}
-
-function local_course_templates_extend_settings_navigation(settings_navigation $settingsnav, context $context){
-    global $CFG, $PAGE;
-    if($settingnode = $settingsnav->find('courseadmin', navigation_node::TYPE_COURSE)) {
-        $strfoo = 'Course Template';
-        $url = new moodle_url('/local/course_templates/index.php', array('id' => $PAGE->course->id));
-        $foonode = navigation_node::create(
-            $strfoo,
-            $url,
-            navigation_node::NODETYPE_LEAF,
-            'course_templates',
-            'course_templates',
-            new pix_icon('t/addcontact', $strfoo)
-        );
-        if ($PAGE->url->compare($url, URL_MATCH_BASE)) {
-            $foonode->make_active();
-        }
-        $settingnode->add_node($foonode);
-    }
 }

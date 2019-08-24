@@ -24,23 +24,19 @@
  */
 
 defined('MOODLE_INTERNAL') || die;
-/*
-if($hassiteconfig){
-	//$ADMIN->add('courses', new admin_externalpage('local_course_templates',get_string('addcourse', 'local_course_templates'),new moodle_url('/local/course_templates/index.php')));
 
-	$settings = new admin_settingpage('local_course_templates','Course templates');
-	$ADMIN->add('localplugins',$settings );
-    $options = array(1=>get_string('jumpto_coursepage', 'local_course_templates'),2=>get_string('jumpto_coursesettingspage', 'local_course_templates'));
-	$settings->add(new admin_setting_configselect('local_course_templates/jump_to', get_string('jumpto', 'local_course_templates'),'', 1, $options));
-}
-*/
+
 if ($hassiteconfig) {
-	$settings = new admin_settingpage('local_course_templates','Course templates');
+
+	$ADMIN->add('courses',new admin_externalpage('local_course_templates', get_string('addcourse', 'local_course_templates'),new moodle_url('/local/course_templates/index.php')));
+	
+	$settings = new admin_settingpage('local_course_templates_settings','Course templates');
 	$ADMIN->add('localplugins',$settings );
     $options = array(1=>get_string('jumpto_coursepage', 'local_course_templates'),2=>get_string('jumpto_coursesettingspage', 'local_course_templates'));
 	$settings->add(new admin_setting_configselect('local_course_templates/jump_to', get_string('jumpto', 'local_course_templates'),'', 1, $options));
-}
+	
+	
+	}
 
-$settings = new admin_externalpage('local_course_templates', get_string('addcourse', 'local_course_templates'),new moodle_url('/local/course_templates/index.php'));
-$ADMIN->add('localplugins',$settings);
-$settings = null;
+
+	
