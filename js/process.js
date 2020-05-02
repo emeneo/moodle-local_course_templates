@@ -1,6 +1,6 @@
 var can_process = true;
 
-window.onload = function(){
+$( document ).ready(function() {
     require(['jquery'], function($) {
         $('#btnProcess').click(function(){
             if(!can_process) {
@@ -46,4 +46,4 @@ window.onload = function(){
             });
         })
     });
-}
+});
