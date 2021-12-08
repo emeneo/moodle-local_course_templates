@@ -15,15 +15,17 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 /**
+ * Version details.
+ *
  * @package   local_course_templates
  * @copyright 2017 onwards, emeneo (www.emeneo.com)
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
- 
+
 defined('MOODLE_INTERNAL') || die();
 
 $plugin->component = 'local_course_templates';
-$plugin->cron = 0; 
+$plugin->cron = 0;
 $plugin->version  = 2019120800;
 $plugin->requires = 2015041700;
 $plugin->maturity = MATURITY_STABLE;

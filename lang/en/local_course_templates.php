@@ -14,6 +14,14 @@
 // You should have received a copy of the GNU General Public License
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
+/**
+ * List of strings for the English language.
+ *
+ * @package   local_course_templates
+ * @copyright 2017 onwards, emeneo (www.emeneo.com)
+ * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
+ */
+
 $string['pluginname'] = 'Course templates';
 $string['useastemplate'] = 'Use as template';
 $string['continue'] = 'Continue';

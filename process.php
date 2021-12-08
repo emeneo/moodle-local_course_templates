@@ -15,6 +15,8 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 /**
+ * Process file.
+ *
  * @package   local_course_templates
  * @copyright 2017 onwards, emeneo (www.emeneo.com)
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
@@ -40,46 +42,56 @@ $fullname = optional_param('course_name', '', PARAM_RAW);
 $shortname = optional_param('course_short_name', '', PARAM_RAW);
 $categoryid = optional_param('cateid', 0, PARAM_INT);
 $courseid = optional_param('cid', 0, PARAM_INT);
-$options = array(array('name' => 'blocks', 'value' => 1),
-                 array('name' => 'activities', 'value' => 1),
-                 array('name' => 'filters', 'value' => 1),
-                 array('name' => 'users', 'value' => 1)
-                 );
+$options = array(
+    array('name' => 'blocks', 'value' => 1),
+    array('name' => 'activities', 'value' => 1),
+    array('name' => 'filters', 'value' => 1),
+    array('name' => 'users', 'value' => 1)
+);
 $visible = 1;
 
-$start_datetime = optional_param('start_datetime', '', PARAM_RAW);
-$end_datetime = optional_param('end_datetime', '', PARAM_RAW);
+$startdatetime = optional_param('start_datetime', '', PARAM_RAW);
+$enddatetime = optional_param('end_datetime', '', PARAM_RAW);
 $location = optional_param('location', '', PARAM_RAW);
-$course_date = optional_param('course_date', '', PARAM_RAW);
+$coursedate = optional_param('course_date', '', PARAM_RAW);
 
-if(!empty($start_datetime)){
-	$start_datetime = strtotime($course_date.' '.$start_datetime);
+if (!empty($startdatetime)) {
+    $startdatetime = strtotime($coursedate.' '.$startdatetime);
 }
 
-if(!empty($end_datetime)){
-	$end_datetime = strtotime($course_date.' '.$end_datetime);
+if (!empty($enddatetime)) {
+    $enddatetime = strtotime($coursedate.' '.$enddatetime);
 }
 
 if (!$fullname || !$shortname || !$categoryid || !$courseid) {
     exit(json_encode(array('status' => 2, 'id' => $courseid, 'cateid' => $categoryid)));
 }
 
-$externalObj = new core_course_external();
-$res = $externalObj->duplicate_course($courseid, $fullname, $shortname, $categoryid, $visible, $options);
+$externalobj = new core_course_external();
+$res = $externalobj->duplicate_course($courseid, $fullname, $shortname, $categoryid, $visible, $options);
 
 if (@isset($res['id'])) {
-	$course = $DB->get_record('course',array('id'=>$res['id']));
-	if(!empty($start_datetime)){
-		$course->startdate = $start_datetime;
-		$course->enddate = $end_datetime;
-		$DB->update_record('course', $course);
-	}
+    $course = $DB->get_record('course', array('id' => $res['id']));
 
-	if(!empty($location)){
-		$event_option = $DB->get_record('course_format_options',array('courseid'=>$course->id,'format'=>'event','name'=>'location'));
-		$event_option->value = $location;
-		$DB->update_record('course_format_options', $event_option);
-	}
+    if (!empty($startdatetime)) {
+        $course->startdate = $startdatetime;
+        $course->enddate = $enddatetime;
+        $DB->update_record('course', $course);
+    }
+
+    if (!empty($location)) {
+        $eventoption = $DB->get_record(
+            'course_format_options',
+            array(
+                'courseid' => $course->id,
+                'format' => 'event',
+                'name' => 'location'
+            )
+        );
+        $eventoption->value = $location;
+        $DB->update_record('course_format_options', $eventoption);
+    }
+
     exit(json_encode(array('status' => 1, 'id' => $res['id'], 'shortname' => $res['shortname'])));
 } else {
     exit(json_encode(array('status' => 0)));
