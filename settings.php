@@ -14,10 +14,9 @@
 // You should have received a copy of the GNU General Public License
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
-// OUTCOMMENTED: error_reporting(E_ALL);// open all error reporting (=打开所有错误报告)
-// OUTCOMMENTED: ini_set('display_errors', 'On');
-
 /**
+ * Global Settings
+ *
  * @package   local_course_templates
  * @copyright 2017 onwards, emeneo (www.emeneo.com)
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
@@ -28,15 +27,33 @@ defined('MOODLE_INTERNAL') || die;
 
 if ($hassiteconfig) {
 
-	$ADMIN->add('courses',new admin_externalpage('local_course_templates', get_string('addcourse', 'local_course_templates'),new moodle_url('/local/course_templates/index.php')));
-	
-	$settings = new admin_settingpage('local_course_templates_settings','Course templates');
-	$ADMIN->add('localplugins',$settings );
-    $options = array(1=>get_string('jumpto_coursepage', 'local_course_templates'),2=>get_string('jumpto_coursesettingspage', 'local_course_templates'));
-	$settings->add(new admin_setting_configselect('local_course_templates/jump_to', get_string('jumpto', 'local_course_templates'),'', 1, $options));
-	
-	
-	}
+    $ADMIN->add(
+        'courses',
+        new admin_externalpage(
+            'local_course_templates',
+            get_string('addcourse', 'local_course_templates'),
+            new moodle_url('/local/course_templates/index.php')
+        )
+    );
+
+    $settings = new admin_settingpage('local_course_templates_settings', 'Course templates');
+    $ADMIN->add('localplugins', $settings);
+    $options = array(
+        1 => get_string('jumpto_coursepage', 'local_course_templates'),
+        2 => get_string('jumpto_coursesettingspage', 'local_course_templates')
+    );
+    $settings->add(
+        new admin_setting_configselect(
+            'local_course_templates/jump_to',
+            get_string('jumpto', 'local_course_templates'),
+            '',
+            1,
+            $options
+        )
+    );
 
 
-	
+}
+
+
+
