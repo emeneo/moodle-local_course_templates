@@ -46,6 +46,9 @@ $string['enddate'] = 'End date';
 $string['location'] = 'Location';
 $string['datetime'] = 'Date and time';
 
+$string['namecategory'] = 'Category';
+$string['namecategorydescription'] = 'Please choose the category that you want to use for the course templates';
+
 $string['jumpto'] = 'Jump to';
 $string['jumpto_coursepage'] = 'Course page ';
 $string['jumpto_coursesettingspage'] = 'Course settings page';

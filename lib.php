@@ -33,7 +33,10 @@ defined('MOODLE_INTERNAL') || die;
 function get_template_list() {
     global $CFG, $USER, $DB;
 
-    $sql = "select id,fullname from {course} where category = (select id from {course_categories} where name='Course templates')";
+    $namecategoryid = get_config('local_course_templates', 'namecategory');
+
+    $sql = "select id, fullname from {course} where category = (select id from {course_categories} where id='$namecategoryid')";
+
     return $DB->get_records_sql($sql);
 }
 
