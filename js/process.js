@@ -30,7 +30,7 @@ window.onload = function () {
                             data: post_data,
                             dataType: "json",
                             beforeSend: function () {
-                                $('#btnProcess').val('Creating...');
+                                $('#btnProcess').val('...');
                             },
                             success: function (data, textStatus) {
                                 if(data.status == 1) {
@@ -43,7 +43,7 @@ window.onload = function () {
                                 }else{
                                     window.location.href = $('#process_returnurl').val() + "&status=" + data.status + "&courseid=" + data.id + "&cateid=" + data.cateid;
                                 }
-                                $('#btnProcess').val('Continue');
+                                $('#btnProcess').val('....');
                                 can_process = true;
                             }
                         }

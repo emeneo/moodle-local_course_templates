@@ -70,7 +70,9 @@ if (!$step) {
         . ';">1</span>';
     $htmlstepper .= '<span class="bs-stepper-label"><strong style="color:'
         . $themecfg->brandcolor
-        . ';">Choose Template</strong></span>';
+        . ';">'
+        . get_string('choosetemplatebanner', 'local_course_templates')
+        . '</strong></span>';
     $htmlstepper .= '</button>';
     $htmlstepper .= '</div>';
     $htmlstepper .= '<div class="line"></div>';
@@ -78,7 +80,9 @@ if (!$step) {
     $htmlstepper .= '<button type="button" class="step-trigger" role="tab" '
         . 'aria-controls="information-part" id="information-part-trigger" disabled="disabled">';
     $htmlstepper .= '<span class="bs-stepper-circle">2</span>';
-    $htmlstepper .= '<span class="bs-stepper-label">Select Category</span>';
+    $htmlstepper .= '<span class="bs-stepper-label">'
+        . get_string('selectcategorybanner', 'local_course_templates')
+        . '</span>';
     $htmlstepper .= '</button>';
     $htmlstepper .= '</div>';
     $htmlstepper .= '<div class="line"></div>';
@@ -86,7 +90,9 @@ if (!$step) {
     $htmlstepper .= '<button type="button" class="step-trigger" role="tab" '
         . 'aria-controls="information-part" id="information-part-trigger" disabled="disabled">';
     $htmlstepper .= '<span class="bs-stepper-circle">3</span>';
-    $htmlstepper .= '<span class="bs-stepper-label">Define Settings</span>';
+    $htmlstepper .= '<span class="bs-stepper-label">'
+        . get_string('definesettingsbanner', 'local_course_templates')
+        . '</span>';
     $htmlstepper .= '</button>';
     $htmlstepper .= '</div>';
     $htmlstepper .= '</div>';
@@ -102,17 +108,23 @@ if (!$step) {
     $htmlstepper .= '<button type="button" class="step-trigger" role="tab" '
         . 'aria-controls="logins-part" id="logins-part-trigger" disabled="disabled">';
     $htmlstepper .= '<span class="bs-stepper-circle">1</span>';
-    $htmlstepper .= '<span class="bs-stepper-label">Choose Template</span>';
+    $htmlstepper .= '<span class="bs-stepper-label">'
+        . get_string('choosetemplatebanner', 'local_course_templates')
+        . '</span>';
     $htmlstepper .= '</button>';
     $htmlstepper .= '</div>';
     $htmlstepper .= '<div class="line"></div>';
     $htmlstepper .= '<div class="step active" data-target="#information-part">';
     $htmlstepper .= '<button type="button" class="step-trigger" role="tab" '
         . 'aria-controls="information-part" id="information-part-trigger" disabled="disabled">';
-    $htmlstepper .= '<span class="bs-stepper-circle" style="background-color:'.$themecfg->brandcolor.';">2</span>';
+    $htmlstepper .= '<span class="bs-stepper-circle" style="background-color:'
+        . $themecfg->brandcolor
+        . ';">2</span>';
     $htmlstepper .= '<span class="bs-stepper-label"><strong style="color:'
         . $themecfg->brandcolor
-        . ';">Select Category</strong></span>';
+        . ';">'
+        . get_string('selectcategorybanner', 'local_course_templates')
+        . '</strong></span>';
     $htmlstepper .= '</button>';
     $htmlstepper .= '</div>';
     $htmlstepper .= '<div class="line"></div>';
@@ -120,11 +132,14 @@ if (!$step) {
     $htmlstepper .= '<button type="button" class="step-trigger" role="tab" '
         . 'aria-controls="information-part" id="information-part-trigger" disabled="disabled">';
     $htmlstepper .= '<span class="bs-stepper-circle">3</span>';
-    $htmlstepper .= '<span class="bs-stepper-label">Define Settings</span>';
+    $htmlstepper .= '<span class="bs-stepper-label">'
+        . get_string('definesettingsbanner', 'local_course_templates')
+        . '</span>';
     $htmlstepper .= '</button>';
     $htmlstepper .= '</div>';
     $htmlstepper .= '</div>';
     echo $htmlstepper;
+
     if (!$cid) {
         echo $OUTPUT->notification(get_string('choosetemplate', 'local_course_templates'));
         echo html_writer::tag(
@@ -133,7 +148,7 @@ if (!$step) {
                 'input',
                 array(
                     'type' => 'button',
-                    'value' => 'Back',
+                    'value' => get_string('back', 'local_course_templates'),
                     'onclick' => 'javascript :history.back(-1)',
                     'class' => 'btn btn-primary',
                     'style' => 'margin-right:20px;'
@@ -149,7 +164,14 @@ if (!$step) {
             )
         );
     } else {
-        echo html_writer::tag('p', html_writer::tag('strong', get_string('choosecategory', 'local_course_templates')));
+        echo html_writer::tag(
+            'p',
+            html_writer::tag(
+                'strong',
+                get_string('choosecategory', 'local_course_templates')
+            )
+        );
+
         echo get_template_categories_form($cid);
     }
 } else if ($step == 3) {
@@ -161,7 +183,9 @@ if (!$step) {
     $htmlstepper .= '<button type="button" class="step-trigger" role="tab" '
         . 'aria-controls="logins-part" id="logins-part-trigger" disabled="disabled">';
     $htmlstepper .= '<span class="bs-stepper-circle">1</span>';
-    $htmlstepper .= '<span class="bs-stepper-label">Choose Template</span>';
+    $htmlstepper .= '<span class="bs-stepper-label">'
+        . get_string('choosetemplatebanner', 'local_course_templates')
+        . '</span>';
     $htmlstepper .= '</button>';
     $htmlstepper .= '</div>';
     $htmlstepper .= '<div class="line"></div>';
@@ -169,21 +193,29 @@ if (!$step) {
     $htmlstepper .= '<button type="button" class="step-trigger" role="tab" '
         . 'aria-controls="information-part" id="information-part-trigger" disabled="disabled">';
     $htmlstepper .= '<span class="bs-stepper-circle">2</span>';
-    $htmlstepper .= '<span class="bs-stepper-label">Select Category</span>';
+    $htmlstepper .= '<span class="bs-stepper-label">'
+        . get_string('selectcategorybanner', 'local_course_templates')
+        . '</span>';
     $htmlstepper .= '</button>';
     $htmlstepper .= '</div>';
     $htmlstepper .= '<div class="line"></div>';
     $htmlstepper .= '<div class="step active" data-target="#information-part">';
     $htmlstepper .= '<button type="button" class="step-trigger" role="tab" '
         . 'aria-controls="information-part" id="information-part-trigger" disabled="disabled">';
-    $htmlstepper .= '<span class="bs-stepper-circle" style="background-color:'.$themecfg->brandcolor.';">3</span>';
+    $htmlstepper .= '<span class="bs-stepper-circle" style="background-color:'
+        . $themecfg->brandcolor
+        . ';">3</span>';
     $htmlstepper .= '<span class="bs-stepper-label"><strong style="color:'
         . $themecfg->brandcolor
-        . ';">Define Settings</strong></span>';
+        . ';">'
+        . get_string('definesettingsbanner', 'local_course_templates')
+        . '</strong></span>';
     $htmlstepper .= '</button>';
     $htmlstepper .= '</div>';
     $htmlstepper .= '</div>';
-    $htmlstepper .= '<input type="hidden" id="jump_to" value="'.$coursetemplatesconfig->jump_to.'">';
+    $htmlstepper .= '<input type="hidden" id="jump_to" value="'
+        . $coursetemplatesconfig->jump_to
+        . '">';
     echo $htmlstepper;
     if (!$selcate) {
         echo $OUTPUT->notification(get_string('choosecategory', 'local_course_templates'));
@@ -193,7 +225,7 @@ if (!$step) {
                 'input',
                 array(
                     'type' => 'button',
-                    'value' => 'Back',
+                    'value' => get_string('back', 'local_course_templates'),
                     'onclick' => 'javascript :history.back(-1)',
                     'class' => 'btn btn-primary',
                     'style' => 'margin-right:20px;'
@@ -216,7 +248,7 @@ if (!$step) {
     $status = $coursestatus;
     $courseid = $courseid;
     if ($status == 1) {
-        $redirecturl = $CFG->wwwroot.'/course/view.php?id='.$courseid;
+        $redirecturl = $CFG->wwwroot.'/course/view.php?id=' . $courseid;
 
         echo html_writer::tag('p', get_string('createsuccess', 'local_course_templates'));
         echo html_writer::tag(
@@ -225,7 +257,7 @@ if (!$step) {
                 'input',
                 array(
                     'type' => 'button',
-                    'value' => 'Back',
+                    'value' => get_string('back', 'local_course_templates'),
                     'onclick' => 'javascript :history.back(-1)',
                     'class' => 'btn btn-primary',
                     'style' => 'margin-right:20px;'
@@ -249,7 +281,7 @@ if (!$step) {
                 'input',
                 array(
                     'type' => 'button',
-                    'value' => 'Back',
+                    'value' => get_string('back', 'local_course_templates'),
                     'onclick' => 'javascript :history.back(-1)',
                     'class' => 'btn btn-primary',
                     'style' => 'margin-right:20px;'
@@ -277,7 +309,7 @@ if (!$step) {
                 'input',
                 array(
                     'type' => 'button',
-                    'value' => 'Back',
+                    'value' => get_string('back', 'local_course_templates'),
                     'onclick' => 'javascript :history.back(-1)',
                     'class' => 'btn btn-primary',
                     'style' => 'margin-right:20px;'

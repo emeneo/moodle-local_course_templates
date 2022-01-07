@@ -22,8 +22,6 @@
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
-defined('MOODLE_INTERNAL') || die;
-
 /**
  * Gets the list of templates.
  *
@@ -148,7 +146,7 @@ function get_template_categories_form($cid) {
             'input',
             array(
                 'type' => 'button',
-                'value' => 'Back',
+                'value' => get_string('back', 'local_course_templates'),
                 'onclick' => 'javascript :history.back(-1)',
                 'class' => 'btn btn-primary',
                 'style' => 'margin-right:20px;'
@@ -267,7 +265,7 @@ function get_template_setting_form($cid, $categoryid) {
             'input',
             array(
                 'type' => 'button',
-                'value' => 'Back',
+                'value' => get_string('back', 'local_course_templates'),
                 'onclick' => 'javascript :history.back(-1)',
                 'class' => 'btn btn-primary',
                 'style' => 'margin-right:20px;'
