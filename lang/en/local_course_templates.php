@@ -22,33 +22,36 @@
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
-$string['pluginname'] = 'Course templates';
-$string['useastemplate'] = 'Use as template';
+defined('MOODLE_INTERNAL') || die();
+
+$string['addcourse'] = 'Add course from template';
+$string['back'] = 'Back';
+$string['choosecategory'] = 'Please select your course category';
+$string['choosetemplate'] = 'Please choose your template';
+$string['choosetemplatebanner'] = 'Choose Template';
 $string['continue'] = 'Continue';
-$string['parametererror'] = 'Parameter error';
+$string['course_templates:edit'] = 'Edit course template';
+$string['course_templates:view'] = 'View course template';
 $string['coursename'] = 'Course name';
 $string['courseshortname'] = 'Course short name';
-$string['createsuccess'] = 'Create a new course successfully';
 $string['createfailed'] = 'There was a problem. Did you use a course name which already exist? Please try again.';
-$string['addcourse'] = 'Add Course';
-$string['choosetemplate'] = 'Please choose your template';
-$string['choosecategory'] = 'Please select your course category';
+$string['createsuccess'] = 'Create a new course successfully';
+$string['datetime'] = 'Date and time';
+$string['definesettingsbanner'] = 'Define Settings';
+$string['enddate'] = 'End date';
+$string['endtime'] = 'End time';
+$string['hiddencategories'] = 'Hidden categories';
 $string['inputinfo'] = 'Please enter below infomation';
 $string['inputinfotip'] = 'Please enter new course infomation';
-$string['course_templates:view'] = 'View course template';
-$string['course_templates:edit'] = 'Edit course template';
-$string['hiddencategories'] = 'Hidden categries';
-
-$string['startdate'] = 'Start date';
-$string['starttime'] = 'Start time';
-$string['endtime'] = 'End time';
-$string['enddate'] = 'End date';
+$string['jumpto'] = 'Jump to';
+$string['jumpto_coursepage'] = 'Course page';
+$string['jumpto_coursesettingspage'] = 'Course settings page';
 $string['location'] = 'Location';
-$string['datetime'] = 'Date and time';
-
 $string['namecategory'] = 'Category';
 $string['namecategorydescription'] = 'Please choose the category that you want to use for the course templates';
-
-$string['jumpto'] = 'Jump to';
-$string['jumpto_coursepage'] = 'Course page ';
-$string['jumpto_coursesettingspage'] = 'Course settings page';
+$string['parametererror'] = 'Parameter error';
+$string['pluginname'] = 'Course templates';
+$string['selectcategorybanner'] = 'Select Category';
+$string['startdate'] = 'Start date';
+$string['starttime'] = 'Start time';
+$string['useastemplate'] = 'Use as template';
