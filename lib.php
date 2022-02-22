@@ -22,14 +22,50 @@
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
+use local_course_templates\coursecategorieslistform;
+use local_course_templates\coursetemplateslistform;
+
+/**
+ * Loads category specific settings in the navigation
+ *
+ * @param navigation_node $parentnode
+ * @param context_coursecat $context
+ *
+ * @return navigation_node
+ */
+function local_course_templates_extend_navigation_category_settings($parentnode, $context) {
+    $capabilities = array(
+        'moodle/backup:backupcourse',
+        'moodle/backup:userinfo',
+        'moodle/restore:restorecourse',
+        'moodle/restore:userinfo',
+        'moodle/course:create',
+        'moodle/site:approvecourse',
+    );
+
+    if (has_capability('local/course_templates:view', $context)
+            && has_all_capabilities($capabilities, $context)
+    ) {
+        $parentnode->add(
+            get_string('addcourse', 'local_course_templates'),
+            new moodle_url('/local/course_templates/index.php', array('cateid' => $context->instanceid)),
+            navigation_node::TYPE_SETTING,
+            null,
+            null,
+            new pix_icon('t/add', get_string('addcourse', 'local_course_templates'))
+        );
+    };
+}
+
 /**
  * Gets the list of templates.
  *
  * @return array
+ *
  * @throws dml_exception
  */
 function get_template_list() {
-    global $CFG, $USER, $DB;
+    global $DB;
 
     $namecategoryid = get_config('local_course_templates', 'namecategory');
 
@@ -41,15 +77,26 @@ function get_template_list() {
 /**
  * Gets the form for the template list.
  *
+ * @param int $cateid
+ *
  * @return string
+ *
  * @throws coding_exception
  * @throws dml_exception
  */
-function get_template_list_form() {
-    global $CFG, $USER, $DB;
+function get_template_list_form($cateid = null) {
+    global $CFG, $USER;
 
-    $context = context_user::instance($USER->id);
-    $redirecturl = $CFG->wwwroot.'/local/course_templates/index.php?step=2';
+    if (isset($cateid) && !empty($cateid)) {
+        $cateid = (int) $cateid;
+
+        $context = context_coursecat::instance($cateid);
+    } else {
+        $context = context_user::instance($USER->id);
+    }
+
+    $redirecturl = $CFG->wwwroot.'/local/course_templates/index.php?cateid=' . $cateid . '&step=2';
+
     $rows = get_template_list();
 
     $table = new html_table();
@@ -59,15 +106,13 @@ function get_template_list_form() {
         $data = array();
 
         $data[] = format_string($row->fullname, true, ['context' => $context]);
-        $data[] = html_writer::empty_tag(
-            'input',
-            array(
-                'type' => 'button',
-                'value' => get_string('useastemplate', 'local_course_templates'),
-                'onclick' => 'window.location.href="' . $redirecturl . '&cid=' . $row->id . '"',
-                'class' => 'btn btn-primary'
-            )
-        );
+
+        $mform = new coursetemplateslistform($redirecturl . '&cid=' . $row->id, array('buttonid' => $row->id));
+
+        // Turn on output buffering because MoodleQuickForm writes to the buffer directly.
+        ob_start();
+        $mform->display();
+        $data[] = ob_get_clean();
 
         $table->data[] = $data;
     }
@@ -76,92 +121,61 @@ function get_template_list_form() {
 }
 
 /**
- * Gets the course categories.
- *
- * @param int $visible
- * @return array
- * @throws dml_exception
- */
-function get_template_categories($visible = 1) {
-    global $CFG, $USER, $DB;
-
-    $sql = "select id,name,description from {course_categories} where visible=$visible";
-
-    return $DB->get_records_sql($sql);
-}
-
-/**
  * Gets the form for the course categories.
  *
- * @param string $cid
+ * @param int $cid
+ * @param int $cateid
  *
  * @return string
+ *
  * @throws coding_exception
  * @throws dml_exception
  */
-function get_template_categories_form($cid) {
-    global $CFG, $USER, $DB;
+function get_template_categories_form($cid, $cateid = null) {
+    global $CFG, $USER;
 
-    $context = context_user::instance($USER->id);
-    $redirecturl = $CFG->wwwroot.'/local/course_templates/index.php?step=3&cid=' . $cid;
-    $rows = get_template_categories(1);
+    $capabilities = array(
+        'moodle/backup:backupcourse',
+        'moodle/backup:userinfo',
+        'moodle/restore:restorecourse',
+        'moodle/restore:userinfo',
+        'moodle/course:create',
+        'moodle/site:approvecourse',
+        'local/course_templates:view',
+    );
 
-    $output = '';
-    $action = $redirecturl;
-    $output .= html_writer::start_tag('form', array('action' => $action, 'method' => 'post'));
-    $table = new html_table();
-    $table->align = array('left');
+    $cateid = (int) $cateid ?? 1;
 
-    foreach ($rows as $row) {
-        $data = array();
+    $redirecturl = $CFG->wwwroot.'/local/course_templates/index.php?cateid=' . $cateid . '&step=3&cid=' . $cid;
 
-        $data[] = html_writer::empty_tag('input', array('type' => 'radio', 'value' => $row->id, 'name' => 'sel_cate'));
-        $data[] = format_string($row->name, true, ['context' => $context]);
-        $data[] = strip_tags(format_text($row->description, FORMAT_HTML, ['context' => $context]));
+    $rowsarray = \core_course_category::make_categories_list($capabilities);
 
-        $table->data[] = $data;
+    $categoriesarray = array();
+
+    foreach ($rowsarray as $key => $row) {
+        $categoriesarray[$key] = $row;
     }
 
-    $rows = get_template_categories(0);
-    $hiddentable = new html_table();
-
-    $hiddentable->align = array('left');
-
-    foreach ($rows as $row) {
-        $data = array();
-
-        $data[] = html_writer::empty_tag('input', array('type' => 'radio', 'value' => $row->id, 'name' => 'sel_cate'));
-        $data[] = format_string($row->name, true, ['context' => $context]);
-        $data[] = strip_tags(format_text($row->description, FORMAT_HTML, ['context' => $context]));
-
-        $hiddentable->data[] = $data;
-    }
-
-    $output .= html_writer::table($table);
-    $output .= html_writer::tag('p', html_writer::tag('strong', get_string('hiddencategories',  'local_course_templates')));
-    $output .= html_writer::table($hiddentable);
-    $output .= html_writer::tag(
-        'p',
-        html_writer::empty_tag(
-            'input',
-            array(
-                'type' => 'button',
-                'value' => get_string('back', 'local_course_templates'),
-                'onclick' => 'javascript :history.back(-1)',
-                'class' => 'btn btn-primary',
-                'style' => 'margin-right:20px;'
-            )
-        ) . html_writer::empty_tag(
-            'input',
-            array(
-                'type' => 'submit',
-                'value' => get_string('continue', 'local_course_templates'),
-                'class' => 'btn btn-primary'
-            )
+    $mform = new coursecategorieslistform(
+        $redirecturl,
+        array(
+            'categoriesarray' => $categoriesarray,
+            'defaultcategory' => $cateid,
         )
     );
 
-    $output .= html_writer::end_tag('form');
+    // Turn on output buffering because MoodleQuickForm writes to the buffer directly.
+    ob_start();
+    $mform->display();
+    $data[] = ob_get_clean();
+
+    $output = '';
+    $table = new html_table();
+    $table->align = array('left');
+
+    $table->data[] = $data;
+
+    $output .= html_writer::table($table);
 
     return $output;
 }
@@ -169,30 +183,40 @@ function get_template_categories_form($cid) {
 /**
  * Gets the form for the template setting.
  *
- * @param string $cid
- * @param string $categoryid
+ * @param int $cid
+ * @param int $categoryid
+ * @param int $cateid
  *
  * @return string
+ *
  * @throws coding_exception
  * @throws dml_exception
  */
-function get_template_setting_form($cid, $categoryid) {
-    global $CFG, $USER, $DB;
+function get_template_setting_form($cid, $categoryid, $cateid = null) {
+    global $CFG, $DB, $OUTPUT;
+
+    if (isset($cateid) && !empty($cateid)) {
+        $cateid = (int) $cateid;
+    }
 
     $course = $DB->get_record('course', array('id' => $cid));
 
-    $redirecturl = $CFG->wwwroot.'/local/course_templates/process.php?cid='
+    $redirecturl = $CFG->wwwroot.'/local/course_templates/process.php?cateid=' . $cateid . '&cid='
         . $cid
-        . '&cateid='
-        . $categoryid
         . '&sesskey='
         . sesskey();
-    $returnurl   = $CFG->wwwroot.'/local/course_templates/index.php?step=4';
+
+    $returnurl   = $CFG->wwwroot.'/local/course_templates/index.php?cateid=' . $cateid . '&step=4';
+
     $output = '';
     $output .= '<script src="'.$CFG->wwwroot.'/local/course_templates/js/jquery-1.8.3.min.js"></script>';
-    $output .= '<link rel="stylesheet" href="'.$CFG->wwwroot.'/local/course_templates/js/bootstrap-datetimepicker.css">';
+    $output .= '<link rel="stylesheet" href="'.$CFG->wwwroot.'/local/course_templates/css/bootstrap-datetimepicker.css">';
+    $output .= '<link rel="stylesheet" href="'.$CFG->wwwroot.'/local/course_templates/css/throbber.css">';
     $output .= '<script src="'.$CFG->wwwroot.'/local/course_templates/js/bootstrap-datetimepicker.js"></script>';
     $output .= '<script src="'.$CFG->wwwroot.'/local/course_templates/js/process.js"></script>';
+    $output .= '<div id="course_templates_validation_error_message" data-validation-message="'
+        . get_string('requiredelement', 'form')
+        . '"></div>';
 
     $output .= html_writer::start_tag('input', array('type' => 'hidden', 'id' => 'process_request_url', 'value' => $redirecturl));
     $output .= html_writer::start_tag('input', array('type' => 'hidden', 'id' => 'process_returnurl', 'value' => $returnurl));
@@ -200,10 +224,53 @@ function get_template_setting_form($cid, $categoryid) {
     $table = new html_table();
     $table->align = array('left');
 
-    $table->data[] = array(get_string('coursename', 'local_course_templates'),
-                           html_writer::empty_tag('input', array('type' => 'text', 'id' => 'course_name')));
-    $table->data[] = array(get_string('courseshortname', 'local_course_templates'),
-                           html_writer::empty_tag('input', array('type' => 'text', 'id' => 'course_short_name')));
+    $table->data[] = array(
+        html_writer::nonempty_tag(
+            'label',
+            get_string('coursename', 'local_course_templates'),
+            array(
+                'for' => 'course_name',
+                'id' => 'course_name_label'
+            )
+        ),
+        $OUTPUT->pix_icon('req', get_string('requiredelement', 'form')),
+        html_writer::empty_tag(
+           'input',
+           array(
+               'type' => 'text',
+               'id' => 'course_name',
+               'required' => 'required'
+           )
+        )
+    );
+    $table->data[] = array(
+        html_writer::nonempty_tag(
+            'label',
+            get_string('courseshortname', 'local_course_templates'),
+            array(
+                'for' => 'course_short_name',
+                'id' => 'course_short_name_label'
+            )
+        ),
+        $OUTPUT->pix_icon('req', get_string('requiredelement', 'form')),
+        html_writer::empty_tag(
+            'input',
+            array(
+               'type' => 'text',
+               'id' => 'course_short_name',
+               'required' => 'required'
+            )
+        )
+    );
+
+    $table->data[] = array(
+        '',
+        '',
+        '<div class="fdescription required">'
+        . get_string('somefieldsrequired', 'form', $OUTPUT->pix_icon('req', get_string('requiredelement', 'form')))
+        . '</div>'
+    );
+
     if ($course->format == 'event') {
         $optionshour = $optionsmin = '';
         for ($i = 0; $i < 24; $i++) {
@@ -226,11 +293,19 @@ function get_template_setting_form($cid, $categoryid) {
             $optionsmin .= '<option value="' . $min . '">' . $min . '</option>';
         }
 
-        $startdatetimeh = '<select id="start_datetime_h" style="margin-right:3px;">'.$optionshour.'</select>';
-        $startdatetimem = '<select id="start_datetime_m" style="margin:0 20px 0 3px;">'.$optionsmin.'</select>';
+        $startdatetimeh = '<select id="start_datetime_h" style="margin-right:3px;">'
+            . $optionshour
+            . '</select>';
+        $startdatetimem = '<select id="start_datetime_m" style="margin:0 20px 0 3px;">'
+            . $optionsmin
+            . '</select>';
 
-        $enddatetimeh = '<select id="end_datetime_h" style="margin-right:3px;">'.$optionshour.'</select>';
-        $enddatetimem = '<select id="end_datetime_m" style="margin:0 20px 0 3px;">'.$optionsmin.'</select>';
+        $enddatetimeh = '<select id="end_datetime_h" style="margin-right:3px;">'
+            . $optionshour
+            . '</select>';
+        $enddatetimem = '<select id="end_datetime_m" style="margin:0 20px 0 3px;">'
+            . $optionsmin
+            . '</select>';
 
         $table->data[] = array(
             get_string('datetime', 'local_course_templates'),
@@ -267,7 +342,7 @@ function get_template_setting_form($cid, $categoryid) {
                 'type' => 'button',
                 'value' => get_string('back', 'local_course_templates'),
                 'onclick' => 'javascript :history.back(-1)',
-                'class' => 'btn btn-primary',
+                'class' => 'btn btn-secondary',
                 'style' => 'margin-right:20px;'
             )
         ) . html_writer::empty_tag(

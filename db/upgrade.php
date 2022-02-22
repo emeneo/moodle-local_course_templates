@@ -32,9 +32,9 @@
  * @throws moodle_exception
  */
 function xmldb_local_course_templates_upgrade($oldversion) {
-    if ($oldversion < 2021121500) {
-        global $CFG, $DB;
+    global $CFG, $DB;
 
+    if ($oldversion < 2021121500) {
         require_once($CFG->dirroot . DIRECTORY_SEPARATOR . 'course' . DIRECTORY_SEPARATOR . 'lib.php');
 
         // Check if the 'Course templates' category exists and if not, create it.
