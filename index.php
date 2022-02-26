@@ -25,15 +25,39 @@
 require_once(dirname(__FILE__) . '/../../config.php');
 require_once('lib.php');
 
+use local_course_templates\coursecategorieslistform;
+
 require_login();
+
+global $CFG, $DB, $USER, $PAGE, $OUTPUT;
 
 $step = optional_param('step', 0, PARAM_INT);
 $cid = optional_param('cid', 0, PARAM_INT);
-$cateid = optional_param('cateid', 0, PARAM_INT);
+$coursestatus = optional_param('status', 0, PARAM_INT);
+$courseid = optional_param('courseid', 0, PARAM_INT);
+$cateid = optional_param('cateid', 1, PARAM_INT);
 
 $params = array();
 $userid = $USER->id;  // Owner of the page.
-$context = context_user::instance($USER->id);
+
+if (isset($cateid) && !empty($cateid)) {
+    $context = context_coursecat::instance($cateid);
+} else {
+    $context = context_user::instance($userid);
+}
+
+$capabilities = array(
+    'moodle/backup:backupcourse',
+    'moodle/backup:userinfo',
+    'moodle/restore:restorecourse',
+    'moodle/restore:userinfo',
+    'moodle/course:create',
+    'moodle/site:approvecourse',
+);
+
+require_capability('local/course_templates:view', $context);
+require_all_capabilities($capabilities, $context);
+
 $header = fullname($USER);
 $pagetitle = get_string('pluginname', 'local_course_templates');
 
@@ -43,14 +67,57 @@ $PAGE->set_pagelayout('standard');
 $PAGE->set_title($pagetitle);
 $PAGE->set_heading($header);
 
-$selcate = optional_param('sel_cate', 0, PARAM_INT);
-$coursestatus = optional_param('status', 0, PARAM_INT);
-$courseid = optional_param('courseid', 0, PARAM_INT);
-$cateid = optional_param('cateid', 0, PARAM_INT);
+$redirecturl = $CFG->wwwroot . '/local/course_templates/index.php';
 
-require_capability('local/course_templates:view', $context);
+$courseidarray = array();
+$categoryidarray = array();
 
-$redirecturl = $CFG->wwwroot.'/local/course_templates/index.php';
+if ($step === 3 && isset($cateid)) {
+    $rowsarray = \core_course_category::make_categories_list($capabilities);
+
+    $categoriesarray = array();
+
+    foreach ($rowsarray as $key => $row) {
+        $categoriesarray[$key] = $row;
+    }
+
+    $mform = new coursecategorieslistform(
+        $redirecturl,
+        array(
+            'categoriesarray' => $categoriesarray,
+            'defaultcategory' => $cateid,
+        )
+    );
+
+    if ($fromform = $mform->get_data()) {
+        $selcate = $fromform->sel_cate;
+        $cateid = $selcate;
+    }
+
+    $redirecturl = $CFG->wwwroot . '/local/course_templates/index.php?step=3&cateid=' . $cateid . 'cid=' . $cid;
+}
+
+$courseidarray['cid'] = isset($cid) ? $cid : '';
+$courseidarray['courseid'] = isset($courseid) ? $courseid : '';
+
+foreach ($courseidarray as $courseidentifier) {
+    if (isset($courseidentifier) && !empty($courseidentifier)) {
+        if (!$DB->get_record('course', array('id' => $courseidentifier), 'id')) {
+            redirect(new moodle_url('/local/course_templates/index.php'), array());
+        }
+    }
+}
+
+$categoryidarray['selcate'] = isset($selcate) ? $selcate : '';
+$categoryidarray['cateid'] = isset($cateid) ? $cateid : 1;
+
+foreach ($categoryidarray as $categoryidentifier) {
+    if (isset($categoryidentifier) && !empty($categoryidentifier)) {
+        if (!$DB->get_record('course_categories', array('id' => $categoryidentifier), 'id')) {
+            redirect(new moodle_url('/local/course_templates/index.php'), array());
+        }
+    }
+}
 
 echo $OUTPUT->header();
 echo $OUTPUT->heading($pagetitle);
@@ -99,7 +166,7 @@ if (!$step) {
     echo $htmlstepper;
 
     echo html_writer::tag('p', html_writer::tag('strong', get_string('choosetemplate', 'local_course_templates')));
-    echo get_template_list_form();
+    echo get_template_list_form($cateid);
 } else if ($step == 2) {
     $htmlstepper = '';
     $htmlstepper .= '<div class="bs-stepper">';
@@ -172,7 +239,7 @@ if (!$step) {
             )
         );
 
-        echo get_template_categories_form($cid);
+        echo get_template_categories_form($cid, $cateid);
     }
 } else if ($step == 3) {
     $coursetemplatesconfig = get_config('local_course_templates');
@@ -217,6 +284,7 @@ if (!$step) {
         . $coursetemplatesconfig->jump_to
         . '">';
     echo $htmlstepper;
+
     if (!$selcate) {
         echo $OUTPUT->notification(get_string('choosecategory', 'local_course_templates'));
         echo html_writer::tag(
@@ -227,7 +295,7 @@ if (!$step) {
                     'type' => 'button',
                     'value' => get_string('back', 'local_course_templates'),
                     'onclick' => 'javascript :history.back(-1)',
-                    'class' => 'btn btn-primary',
+                    'class' => 'btn btn-secondary',
                     'style' => 'margin-right:20px;'
                 )
             ) . html_writer::empty_tag(
@@ -242,11 +310,11 @@ if (!$step) {
     } else {
         $categoryid = $selcate;
         echo html_writer::tag('p', html_writer::tag('strong', get_string('inputinfo', 'local_course_templates')));
-        echo get_template_setting_form($cid, $categoryid);
+        echo get_template_setting_form($cid, $categoryid, $cateid);
     }
 } else if ($step == 4) {
     $status = $coursestatus;
-    $courseid = $courseid;
+
     if ($status == 1) {
         $redirecturl = $CFG->wwwroot.'/course/view.php?id=' . $courseid;
 
@@ -259,7 +327,7 @@ if (!$step) {
                     'type' => 'button',
                     'value' => get_string('back', 'local_course_templates'),
                     'onclick' => 'javascript :history.back(-1)',
-                    'class' => 'btn btn-primary',
+                    'class' => 'btn btn-secondary',
                     'style' => 'margin-right:20px;'
                 )
             ) . html_writer::empty_tag(
@@ -273,7 +341,6 @@ if (!$step) {
             )
         );
     } else if ($status == 2) {
-        $cateid = $cateid;
         echo $OUTPUT->notification(get_string('inputinfotip', 'local_course_templates'));
         echo html_writer::tag(
             'p',
@@ -283,7 +350,7 @@ if (!$step) {
                     'type' => 'button',
                     'value' => get_string('back', 'local_course_templates'),
                     'onclick' => 'javascript :history.back(-1)',
-                    'class' => 'btn btn-primary',
+                    'class' => 'btn btn-secondary',
                     'style' => 'margin-right:20px;'
                 )
             ) . html_writer::empty_tag(
@@ -311,7 +378,7 @@ if (!$step) {
                     'type' => 'button',
                     'value' => get_string('back', 'local_course_templates'),
                     'onclick' => 'javascript :history.back(-1)',
-                    'class' => 'btn btn-primary',
+                    'class' => 'btn btn-secondary',
                     'style' => 'margin-right:20px;'
                 )
             ) . html_writer::empty_tag(

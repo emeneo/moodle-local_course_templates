@@ -23,9 +23,12 @@
  */
 
 require_once(dirname(__FILE__) . '/../../config.php');
-require_once('../../course/externallib.php');
 
-global $CFG, $DB;
+ini_set('max_execution_time', 0);
+
+global $CFG, $DB, $USER;
+
+require_once($CFG->dirroot . '/course/externallib.php');
 
 require_login();
 require_sesskey();
@@ -34,14 +37,30 @@ if (!defined('AJAX_SCRIPT')) {
     define('AJAX_SCRIPT', true);
 }
 
-$context = context_user::instance($USER->id);
-require_capability('local/course_templates:view', $context);
-
 // TODO: check option users further.
 $fullname = optional_param('course_name', '', PARAM_RAW);
 $shortname = optional_param('course_short_name', '', PARAM_RAW);
-$categoryid = optional_param('cateid', 0, PARAM_INT);
+$categoryid = optional_param('cateid', 1, PARAM_INT);
 $courseid = optional_param('cid', 0, PARAM_INT);
+
+if (isset($categoryid) && !empty($categoryid)) {
+    $context = context_coursecat::instance($categoryid);
+} else {
+    $context = context_user::instance($USER->id);
+}
+
+$capabilities = array(
+    'moodle/backup:backupcourse',
+    'moodle/backup:userinfo',
+    'moodle/restore:restorecourse',
+    'moodle/restore:userinfo',
+    'moodle/course:create',
+    'moodle/site:approvecourse',
+);
+
+require_capability('local/course_templates:view', $context);
+require_all_capabilities($capabilities, $context);
+
 $options = array(
     array('name' => 'blocks', 'value' => 1),
     array('name' => 'activities', 'value' => 1),
@@ -68,7 +87,13 @@ if (!$fullname || !$shortname || !$categoryid || !$courseid) {
 }
 
 $externalobj = new core_course_external();
-$res = $externalobj->duplicate_course($courseid, $fullname, $shortname, $categoryid, $visible, $options);
+
+try {
+    $res = $externalobj->duplicate_course($courseid, $fullname, $shortname, $categoryid, $visible, $options);
+} catch (moodle_exception $e) {
+    \core\notification::error($e->getMessage());
+    exit(json_encode(array('status' => 0)));
+}
 
 if (@isset($res['id'])) {
     $course = $DB->get_record('course', array('id' => $res['id']));
