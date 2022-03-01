@@ -63,7 +63,27 @@ $pagetitle = get_string('pluginname', 'local_course_templates');
 
 $PAGE->set_context($context);
 $PAGE->set_url('/local/course_templates/index.php', $params);
+$PAGE->requires->css(new moodle_url('/local/course_templates/styles/bs-stepper.min.css'));
+$PAGE->requires->css(new moodle_url('/local/course_templates/styles.css'));
 $PAGE->set_pagelayout('standard');
+
+switch ($step) {
+    case 2:
+        $banner = get_string('selectcategorybanner', 'local_course_templates');
+        break;
+
+    case 3:
+        $banner = get_string('definesettingsbanner', 'local_course_templates');
+        break;
+
+    default:
+        $banner = get_string('choosetemplatebanner', 'local_course_templates');
+        break;
+}
+
+$pageheading = get_string('createcoursefromtemplate', 'local_course_templates');
+$pagetitle = $banner.' - '.$pageheading;
+
 $PAGE->set_title($pagetitle);
 $PAGE->set_heading($header);
 
@@ -120,8 +140,7 @@ foreach ($categoryidarray as $categoryidentifier) {
 }
 
 echo $OUTPUT->header();
-echo $OUTPUT->heading($pagetitle);
-echo '<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bs-stepper/dist/css/bs-stepper.min.css">';
+echo $OUTPUT->heading($pageheading);
 
 $themecfg = get_config('theme_boost');
 
