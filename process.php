@@ -29,6 +29,7 @@ ini_set('max_execution_time', 0);
 global $CFG, $DB, $USER;
 
 require_once($CFG->dirroot . '/course/externallib.php');
+require_once($CFG->dirroot . '/course/format/lib.php');
 
 require_login();
 require_sesskey();
@@ -89,6 +90,20 @@ if (!$fullname || !$shortname || !$categoryid || !$courseid) {
 $externalobj = new core_course_external();
 
 try {
+    // Make sure the course's sections have proper labels.
+    // See the set_label() method in /backup/util/ui/backup_ui_setting.class.php.
+    // The set_label() method sanitizes the section name using PARAM_CLEANHTML (as of Moodle 3.11).
+    $sections = $DB->get_records('course_sections', array('course' => $courseid), 'section');
+
+    foreach ($sections as $section) {
+        if (isset($section->name) && clean_param($section->name, PARAM_CLEANHTML) === '') {
+            course_get_format($section->course)->inplace_editable_update_section_name($section, 'sectionname', null);
+
+            $section->name = null;
+            $DB->update_record('course_sections', $section);
+        }
+    }
+
     $res = $externalobj->duplicate_course($courseid, $fullname, $shortname, $categoryid, $visible, $options);
 } catch (moodle_exception $e) {
     \core\notification::error($e->getMessage());
