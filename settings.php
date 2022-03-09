@@ -85,7 +85,8 @@ if ($hassiteconfig) {
 
         $options = array(
             1 => get_string('jumpto_coursepage', 'local_course_templates'),
-            2 => get_string('jumpto_coursesettingspage', 'local_course_templates'));
+            2 => get_string('jumpto_coursesettingspage', 'local_course_templates')
+        );
 
         $settings->add(
             new admin_setting_configselect(

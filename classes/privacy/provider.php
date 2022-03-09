@@ -25,8 +25,6 @@
 
 namespace local_course_templates\privacy;
 
-defined('MOODLE_INTERNAL') || die();
-
 /**
  * Data provider class.
  *
