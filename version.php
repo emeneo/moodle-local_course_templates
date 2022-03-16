@@ -29,4 +29,4 @@ $plugin->cron = 0;
 $plugin->version  = 2022031000;
 $plugin->requires = 2018120300; //Moodle 3.6+
 $plugin->maturity = MATURITY_STABLE;
-$plugin->release = 'Course templates plugin Version 3.11-a';
+$plugin->release = 'Course templates plugin Version 3.11-b';
