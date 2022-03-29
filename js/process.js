@@ -85,7 +85,10 @@ window.onload = function () {
                                 $('#btnProcess').after('<div id="local-course-templates-throbber"></div>');
                             },
                             success: function (data, textStatus) {
-                                if(data.status == 1) {
+                                if (
+                                    typeof data !== 'undefined'
+                                    && data.status == 1
+                                ) {
                                     $('#local-course-templates-throbber').hide();
                                     if ($('#jump_to').val() == 1) {
                                         window.location.href = $('#success_returnurl').val() + "/course/view.php?id=" + data.id;
@@ -97,6 +100,59 @@ window.onload = function () {
                                     $('#local-course-templates-throbber').remove();
                                     $('#btnProcess').parent().children().show();
                                 }
+
+                                can_process = true;
+                            },
+                            error: function (request, status, error) {
+                                if (typeof request.responseText !== 'undefined') {
+                                    var jsonPos, jsonString, data;
+
+                                    jsonPos = request.responseText.indexOf('{"status":');
+
+                                    if (jsonPos !== -1) {
+                                        jsonString = request.responseText.substr(jsonPos);
+
+                                        try {
+                                            data = JSON.parse(jsonString);
+                                        } catch(e) {
+                                            $('#local-course-templates-throbber').remove();
+
+                                            window.location.href = $('#success_returnurl').val()
+                                                + "/course/management.php";
+                                        }
+
+                                        if (
+                                            typeof data !== 'undefined'
+                                            && data.status == 1
+                                        ) {
+                                            $('#local-course-templates-throbber').hide();
+
+                                            if ($('#jump_to').val() == 1) {
+                                                window.location.href = $('#success_returnurl').val()
+                                                    + "/course/view.php?id=" + data.id;
+                                            } else {
+                                                window.location.href = $('#success_returnurl').val()
+                                                    + "/course/edit.php?id=" + data.id;
+                                            }
+                                        } else {
+                                            $('#local-course-templates-throbber').remove();
+
+                                            window.location.href = $('#success_returnurl').val()
+                                                + "/course/management.php";
+                                        }
+                                    } else {
+                                        $('#local-course-templates-throbber').remove();
+
+                                        window.location.href = $('#success_returnurl').val()
+                                            + "/course/management.php";
+                                    }
+                                } else {
+                                    $('#local-course-templates-throbber').remove();
+
+                                    window.location.href = $('#success_returnurl').val()
+                                        + "/course/management.php";
+                                }
+
                                 can_process = true;
                             }
                         }
