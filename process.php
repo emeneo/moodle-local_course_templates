@@ -24,9 +24,13 @@
 
 require_once(dirname(__FILE__) . '/../../config.php');
 
-ini_set('max_execution_time', 0);
+@ini_set('max_execution_time', 0);
+@ini_set('display_errors', 0);
+@error_reporting(0);
 
 global $CFG, $DB, $USER;
+
+$CFG->debugdisplay = 0;
 
 require_once($CFG->dirroot . '/course/externallib.php');
 require_once($CFG->dirroot . '/course/format/lib.php');
@@ -110,29 +114,37 @@ try {
     exit(json_encode(array('status' => 0)));
 }
 
+sleep(3);
+
 if (@isset($res['id'])) {
-    $course = $DB->get_record('course', array('id' => $res['id']));
+    try {
+        $course = $DB->get_record('course', array('id' => $res['id']));
 
-    if (!empty($startdatetime)) {
-        $course->startdate = $startdatetime;
-        $course->enddate = $enddatetime;
-        $DB->update_record('course', $course);
-    }
+        if (!empty($startdatetime)) {
+            $course->startdate = $startdatetime;
+            $course->enddate = $enddatetime;
+            $DB->update_record('course', $course);
+        }
 
-    if (!empty($location)) {
-        $eventoption = $DB->get_record(
-            'course_format_options',
-            array(
-                'courseid' => $course->id,
-                'format' => 'event',
-                'name' => 'location'
-            )
-        );
-        $eventoption->value = $location;
-        $DB->update_record('course_format_options', $eventoption);
+        if (!empty($location)) {
+            $eventoption = $DB->get_record(
+                'course_format_options',
+                array(
+                    'courseid' => $course->id,
+                    'format' => 'event',
+                    'name' => 'location'
+                )
+            );
+            $eventoption->value = $location;
+            $DB->update_record('course_format_options', $eventoption);
+        }
+    } catch (\Exception $e) {
+        \core\notification::error($e->getMessage());
+        exit(json_encode(array('status' => 0)));
     }
 
     exit(json_encode(array('status' => 1, 'id' => $res['id'], 'shortname' => $res['shortname'])));
 } else {
+    \core\notification::error(get_string('unknownerror', 'core'));
     exit(json_encode(array('status' => 0)));
 }

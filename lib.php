@@ -146,7 +146,7 @@ function get_template_categories_form($cid, $cateid = null) {
 
     $cateid = (int) $cateid ?? 1;
 
-    $redirecturl = $CFG->wwwroot.'/local/course_templates/index.php?cateid=' . $cateid . '&step=3&cid=' . $cid;
+    $redirecturl = $CFG->wwwroot . '/local/course_templates/index.php?cateid=' . $cateid . '&step=3&cid=' . $cid;
 
     $rowsarray = \core_course_category::make_categories_list($capabilities);
 
@@ -361,7 +361,7 @@ function get_template_setting_form($cid, $categoryid, $cateid = null) {
     return $output;
 }
 
-// Make sure we are compatible with Moodle 3.6+.
+// Make sure that we are compatible with Moodle 3.6+.
 if (!function_exists('require_all_capabilities')) {
     /**
      * A convenience function that tests has_capability for a list of capabilities, and displays an error if
