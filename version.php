@@ -26,7 +26,7 @@ defined('MOODLE_INTERNAL') || die();
 
 $plugin->component = 'local_course_templates';
 $plugin->cron = 0;
-$plugin->version  = 2022031002;
+$plugin->version  = 2022033100;
 $plugin->requires = 2018120300; // Moodle 3.6+.
 $plugin->maturity = MATURITY_STABLE;
-$plugin->release = 'Course templates plugin Version 3.11-c';
+$plugin->release = 'Course templates plugin Version 3.11-e';
