@@ -35,7 +35,7 @@ $step = optional_param('step', 0, PARAM_INT);
 $cid = optional_param('cid', 0, PARAM_INT);
 $coursestatus = optional_param('status', 0, PARAM_INT);
 $courseid = optional_param('courseid', 0, PARAM_INT);
-$cateid = optional_param('cateid', 1, PARAM_INT);
+$cateid = optional_param('cateid', $CFG->defaultrequestcategory, PARAM_INT);
 
 $params = array();
 $userid = $USER->id;  // Owner of the page.
