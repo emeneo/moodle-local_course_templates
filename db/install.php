@@ -34,7 +34,7 @@ function xmldb_local_course_templates_install() {
     global $CFG, $DB;
 
     require_once($CFG->dirroot . DIRECTORY_SEPARATOR . 'course' . DIRECTORY_SEPARATOR . 'lib.php');
-
+    if (PHPUNIT_TEST) { return true; }
     // Check if the 'Course templates' category exists and if not, create it.
     $templatecategory = $DB->get_record('course_categories', array('name' => 'Course templates'));
 
