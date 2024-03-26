@@ -26,33 +26,35 @@ defined('MOODLE_INTERNAL') || die;
 
 global $ADMIN, $USER, $DB, $PAGE;
 
-$contextuser = context_user::instance($USER->id);
+if (isloggedin()) {
+    $contextuser = context_user::instance($USER->id);
 
-$viewcoursetemplates = has_capability('local/course_templates:view', $contextuser);
+    $viewcoursetemplates = has_capability('local/course_templates:view', $contextuser);
 
-$capabilities = array(
-    'moodle/backup:backupcourse',
-    'moodle/backup:userinfo',
-    'moodle/restore:restorecourse',
-    'moodle/restore:userinfo',
-    'moodle/course:create',
-    'moodle/site:approvecourse',
-);
-
-$systemcontext = context_system::instance();
-
-if (has_capability('local/course_templates:view', $contextuser)
-        && has_all_capabilities($capabilities, $systemcontext)
-) {
-    $ADMIN->add(
-        'courses',
-        new admin_externalpage(
-            'local_course_templates',
-            get_string('addcourse', 'local_course_templates'),
-            new moodle_url('/local/course_templates/index.php'),
-            $capabilities
-        )
+    $capabilities = array(
+        'moodle/backup:backupcourse',
+        'moodle/backup:userinfo',
+        'moodle/restore:restorecourse',
+        'moodle/restore:userinfo',
+        'moodle/course:create',
+        'moodle/site:approvecourse',
     );
+
+    $systemcontext = context_system::instance();
+
+    if (has_capability('local/course_templates:view', $contextuser)
+            && has_all_capabilities($capabilities, $systemcontext)
+    ) {
+        $ADMIN->add(
+            'courses',
+            new admin_externalpage(
+                'local_course_templates',
+                get_string('addcourse', 'local_course_templates'),
+                new moodle_url('/local/course_templates/index.php'),
+                $capabilities
+            )
+        );
+    }
 }
 
 if ($hassiteconfig) {
